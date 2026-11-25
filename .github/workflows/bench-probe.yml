@@ -1,4 +1,4 @@
-name: bench probe
+﻿name: bench probe
 
 # Branch-only probe used to capture dbt_bench output on a native ARM64 runner.
 # It is not part of any pull request.
@@ -13,7 +13,7 @@ permissions:
 jobs:
   bench:
     name: dbt_bench on macos-26
-    runs-on: macos-26
+    runs-on: macos-15
     timeout-minutes: 20
     env:
       CARGO_BUILD_JOBS: 3
