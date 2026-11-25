@@ -1,0 +1,35 @@
+name: bench probe
+
+# Branch-only probe used to capture dbt_bench output on a native ARM64 runner.
+# It is not part of any pull request.
+
+on:
+  workflow_dispatch:
+  pull_request:
+
+permissions:
+  contents: read
+
+jobs:
+  bench:
+    name: dbt_bench on macos-26
+    runs-on: macos-26
+    timeout-minutes: 20
+    env:
+      CARGO_BUILD_JOBS: 3
+      CARGO_BUILD_TARGET: aarch64-apple-darwin
+      RUSTUP_TOOLCHAIN: 1.100.0-aarch64-apple-darwin
+    steps:
+      - uses: actions/checkout@3d3c42e5aac5ba805825da76410c181273ba90b1 # v7.0.1
+        with:
+          persist-credentials: false
+      - name: Verify runner architecture
+        run: |
+          uname -m
+          test "$(uname -m)" = arm64
+      - name: Install native Rust
+        run: |
+          rustup toolchain install "$RUSTUP_TOOLCHAIN" --profile minimal
+          rustc -vV
+      - name: Run the benchmark
+        run: cargo bench --locked -p xenora-loader --bench dbt_bench
